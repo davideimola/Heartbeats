@@ -1,0 +1,11 @@
+#Amore Benedetta & Imola Davide
+#Simple DEMULTIPLEXER with one input and two outputs.
+
+.model demux
+.inputs S IN
+.outputs X Y
+.names S IN X
+01 1
+.names S IN Y
+11 1
+.end

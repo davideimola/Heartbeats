@@ -1,0 +1,11 @@
+#Amore Benedetta & Imola Davide
+#AND two bits with one.
+
+.model and1_2
+.inputs x y1 y0
+.outputs z1 z0
+.subckt and x=x y=y1 z=z1
+.subckt and x=x y=y0 z=z0
+.search and.blif
+.end
+

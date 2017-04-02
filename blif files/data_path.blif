@@ -1,0 +1,93 @@
+#Amore Benedetta & Imola Davide
+#Threshold part in the Data-path.
+
+.model data_path
+.inputs start bpm7 bpm6 bpm5 bpm4 bpm3 bpm2 bpm1 bpm0
+.outputs sa1 sa0 numb7 numb6 numb5 numb4 numb3 numb2 numb1 numb0
+
+#Costant declaration.
+
+#Zero.
+.subckt zero x=start u=zero
+.search zero.blif
+
+#One.
+.subckt one x=start u=one
+.search one.blif
+
+#Threshold 160. 
+.subckt thr160 x=start C7=thr1_7 C6=thr1_6 C5=thr1_5 C4=thr1_4 C3=thr1_3 C2=thr1_2 C1=thr1_1 C0=thr1_0
+.search thr160.blif
+
+#Threshold 180.
+.subckt thr180 x=start C7=thr2_7 C6=thr2_6 C5=thr2_5 C4=thr2_4 C3=thr2_3 C2=thr2_2 C1=thr2_1 C0=thr2_0
+.search thr180.blif
+
+#End costant declaration.
+
+#Start Program.
+
+#And of a bit (START) with eight of the BPM. If start=0 then output is 0, else output is BPM Value.
+#abpm = And BPM.
+.subckt and1_8 x=start y7=bpm7 y6=bpm6 y5=bpm5 y4=bpm4 y3=bpm3 y2=bpm2 y1=bpm1 y0=bpm0 z7=abpm7 z6=abpm6 z5=abpm5 z4=abpm4 z3=abpm3 z2=abpm2 z1=abpm1 z0=abpm0
+.search and1_8.blif
+
+#Threshold's control of the BPM
+#BPM greater 160.
+.subckt greater8 A7=abpm7 A6=abpm6 A5=abpm5 A4=abpm4 A3=abpm3 A2=abpm2 A1=abpm1 A0=abpm0 B7=thr1_7 B6=thr1_6 B5=thr1_5 B4=thr1_4 B3=thr1_3 B2=thr1_2 B1=thr1_1 B0=thr1_0 AgtB=thr160
+
+#BPM greater 180.  
+.subckt greater8 A7=abpm7 A6=abpm6 A5=abpm5 A4=abpm4 A3=abpm3 A2=abpm2 A1=abpm1 A0=abpm0 B7=thr2_7 B6=thr2_6 B5=thr2_5 B4=thr2_4 B3=thr2_3 B2=thr2_2 B1=thr2_1 B0=thr2_0 AgtB=thr180
+.search greater8.blif
+
+#Add between the greater result and start.
+#SA Outputs:
+# 00, start=0 thr160=0 thr180=0 (OFF)
+# 01, start=1 thr160=0 thr180=0 (SO)
+# 10, start=1 thr160=1 thr180=0 (IS)
+# 11, start=1 thr160=1 thr180=1 (OS)
+
+.subckt adder2 A1=zero A0=thr160 B1=zero B0=start CIN=zero O1=O160_1 O0=O160_0 COUT=COut160
+.subckt adder2 A1=zero A0=thr180 B1=O160_1 B0=O160_0 CIN=zero O1=sa1 O0=sa0 COUT=COut180
+.search adder2.blif
+
+#Equals between state signal and SA.
+.subckt equals A1=state1 A0=state0 B1=sa1 B0=sa0 O=eqState
+
+#Equals between 00 and SA. In this case the circuit is turned off.
+.subckt equals A1=zero A0=zero B1=sa1 B0=sa0 O=eq00
+.search equals.blif
+
+#NOT of eq00.
+.subckt not A=eq00 O=notEq00
+.search not.blif
+
+#AND between notEq00 and eqState to have the bit of selection of the Demultiplexer.
+.subckt and x=notEq00 y=eqState z=selDemux
+.search and.blif
+
+#Register of SA.
+.subckt register2 A1=sa1 A0=sa0 O1=state1 O0=state0
+.search register2.blif
+
+#Demultiplexer.
+.subckt demux8 S=selDemux IN7=numb7 IN6=numb6 IN5=numb5 IN4=numb4 IN3=numb3 IN2=numb2 IN1=numb1 IN0=numb0 X7=numb0_7 X6=numb0_6 X5=numb0_5 X4=numb0_4 X3=numb0_3 X2=numb0_2 X1=numb0_1 X0=numb0_0 Y7=numb1_7 Y6=numb1_6 Y5=numb1_5 Y4=numb1_4 Y3=numb1_3 Y2=numb1_2 Y1=numb1_1 Y0=numb1_0
+.search demux8.blif
+
+#AND bit a bit between numb0_i and costant zero.
+.subckt and1_8 x=zero y7=numb0_7 y6=numb0_6 y5=numb0_5 y4=numb0_4 y3=numb0_3 y2=numb0_2 y1=numb0_1 y0=numb0_0 z7=Numb0_7 z6=Numb0_6 z5=Numb0_5 z4=Numb0_4 z3=Numb0_3 z2=Numb0_2 z1=Numb0_1 z0=Numb0_0
+.search and1_8.blif
+
+#Adder with exit of the demux 1 and the result of the AND in the case 0.
+.subckt adder8 A7=numb1_7 A6=numb1_6 A5=numb1_5 A4=numb1_4 A3=numb1_3 A2=numb1_2 A1=numb1_1 A0=numb1_0 B7=Numb0_7 B6=Numb0_6 B5=Numb0_5 B4=Numb0_4 B3=Numb0_3 B2=Numb0_2 B1=Numb0_1 B0=Numb0_0 CIN=zero O7=time7 O6=time6 O5=time5 O4=time4 O3=time3 O2=time2 O1=time1 O0=time0 COUT=co
+
+
+#Adder with the result of the previous adder and selector bit of the demux.
+.subckt adder8 A7=time7 A6=time6 A5=time5 A4=time4 A3=time3 A2=time2 A1=time1 A0=time0 B7=zero B6=zero B5=zero B4=zero B3=zero B2=zero B1=zero B0=selDemux CIN=zero O7=nTime7 O6=nTime6 O5=nTime5 O4=nTime4 O3=nTime3 O2=nTime2 O1=nTime1 O0=nTime0 COUT=co1
+.search adder8.blif
+
+#Save the time in the register.
+.subckt register8 A7=nTime7 A6=nTime6 A5=nTime5 A4=nTime4 A3=nTime3 A2=nTime2 A1=nTime1 A0=nTime0 O7=numb7 O6=numb6 O5=numb5 O4=numb4 O3=numb3 O2=numb2 O1=numb1 O0=numb0
+.search register8.blif
+#End Program.
+.end

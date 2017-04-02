@@ -1,0 +1,23 @@
+#Amore Benedetta & Imola Davide
+#Main Programm.
+
+.model main
+.inputs INIT RESET BMP7 BMP6 BMP5 BMP4 BMP3 BMP2 BMP1 BMP0
+.outputs THR1 THR0 NUMB7 NUMB6 NUMB5 NUMB4 NUMB3 NUMB2 NUMB1 NUMB0
+
+#Calculating the value of the START signal.
+.subckt calcStart init=INIT reset=RESET start=START
+
+#Data-Path Call.
+.subckt data_path start=START bpm7=BMP7 bpm6=BMP6 bpm5=BMP5 bpm4=BMP4 bpm3=BMP3 bpm2=BMP2 bpm1=BMP1 bpm0=BMP0 numb7=NUMB7 numb6=NUMB6 numb5=NUMB5 numb4=NUMB4 numb3=NUMB3 numb2=NUMB2 numb1=NUMB1 numb0=NUMB0 sa1=THR1 sa0=THR0
+
+#FSM Call.
+.subckt fsm init=INIT reset=RESET sa1=STATE1 sa0=STATE0 start=BEGIN thr1=STATE1 thr0=STATE0
+
+#Library of the Projecy.
+.search calcStart.blif
+.search data_path.blif
+.search fsm.blif
+
+.end
+

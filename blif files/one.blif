@@ -1,0 +1,9 @@
+#Amore Benedetta & Imola Davide
+#Define one costant.
+
+.model one
+.inputs x
+.outputs u
+.names x u
+- 1
+.end

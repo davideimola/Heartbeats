@@ -1,0 +1,10 @@
+#Amore Benedetta & Imola Davide
+#Simple two-bit REGISTER.
+
+.model register2
+.inputs A1 A0
+.outputs O1 O0
+.subckt register A=A1 O=O1
+.subckt register A=A0 O=O0
+.search register.blif
+.end

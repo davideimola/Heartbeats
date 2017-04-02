@@ -1,0 +1,14 @@
+#Amore Benedetta & Imola Davide
+#Calculating the value of the START signal.
+
+.model calcStart
+.inputs init reset
+.outputs start
+
+#START is 1 when INIT=1 RESET=0.
+
+.subckt not A=reset O=notReset
+.search not.blif
+.subckt and x=init y=notReset z=start
+.search and.blif
+.end

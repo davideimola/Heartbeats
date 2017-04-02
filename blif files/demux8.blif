@@ -1,0 +1,16 @@
+#Amore Benedetta & Imola Davide
+#Simple DEMULTIPLEXER with one eight-bit input and two eight-bit outputs.
+
+.model demux8
+.inputs S IN7 IN6 IN5 IN4 IN3 IN2 IN1 IN0
+.outputs X7 X6 X5 X4 X3 X2 X1 X0 Y7 Y6 Y5 Y4 Y3 Y2 Y1 Y0
+.subckt demux S=S IN=IN7 X=X7 Y=Y7
+.subckt demux S=S IN=IN6 X=X6 Y=Y6
+.subckt demux S=S IN=IN5 X=X5 Y=Y5
+.subckt demux S=S IN=IN4 X=X4 Y=Y4
+.subckt demux S=S IN=IN3 X=X3 Y=Y3
+.subckt demux S=S IN=IN2 X=X2 Y=Y2
+.subckt demux S=S IN=IN1 X=X1 Y=Y1
+.subckt demux S=S IN=IN0 X=X0 Y=Y0
+.search demux.blif
+.end

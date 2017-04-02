@@ -1,0 +1,16 @@
+#Amore Benedetta & Imola Davide
+#Simple eight-bit REGISTER.
+
+.model register8
+.inputs A7 A6 A5 A4 A3 A2 A1 A0
+.outputs O7 O6 O5 O4 O3 O2 O1 O0
+.subckt register A=A7 O=O7
+.subckt register A=A6 O=O6
+.subckt register A=A5 O=O5
+.subckt register A=A4 O=O4
+.subckt register A=A3 O=O3
+.subckt register A=A2 O=O2
+.subckt register A=A1 O=O1
+.subckt register A=A0 O=O0
+.search register.blif
+.end
